@@ -14,10 +14,10 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v4
       with:
         version: '6.0.0'
         modules: webengine
@@ -46,11 +46,15 @@ jobs:
     - name: Install the project
       run: sudo cmake --install build_dir
 
+    - name: Set DEB version
+      id: get_version
+      run: echo "version=$(date +'%Y%m%d')" >> $GITHUB_ENV
+
     - name: Create DEBIAN directory and control file
       run: |
         mkdir -p build_dir/debian/DEBIAN
         echo "Package: goldendict-ng" > build_dir/debian/DEBIAN/control
-        echo "Version: 1.0.0" >> build_dir/debian/DEBIAN/control
+        echo "Version: ${{ env.version }}" >> build_dir/debian/DEBIAN/control
         echo "Section: base" >> build_dir/debian/DEBIAN/control
         echo "Priority: optional" >> build_dir/debian/DEBIAN/control
         echo "Architecture: amd64" >> build_dir/debian/DEBIAN/control
@@ -66,10 +70,10 @@ jobs:
     - name: Build DEB package
       run: |
         dpkg-deb --build build_dir/debian
-        mv build_dir/debian.deb goldendict-ng-1.0.0.deb
+        mv build_dir/debian.deb goldendict-ng-${{ env.version }}.deb
 
     - name: Upload DEB package
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: goldendict-ng-deb
-        path: goldendict-ng-1.0.0.deb
+        path: goldendict-ng-${{ env.version }}.deb
