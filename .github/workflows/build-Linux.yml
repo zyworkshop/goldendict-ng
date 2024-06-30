@@ -25,9 +25,15 @@ jobs:
       run: |
         pip install aqtinstall==3.1.*
 
+    - name: List available modules for Qt 6.2.4
+      run: |
+        python3 -m aqt list-qt linux desktop 6.2.4 --modules
+      continue-on-error: true
+
     - name: Install Qt
       run: |
-        python3 -m aqt install-qt linux desktop 6.2.4 --outputdir /home/runner/work/goldendict-ng/Qt --modules webengine
+        python3 -m aqt install-qt linux desktop 6.2.4 --outputdir /home/runner/work/goldendict-ng/Qt --modules qtwebengine
+      continue-on-error: true
 
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y \
