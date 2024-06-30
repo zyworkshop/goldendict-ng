@@ -16,11 +16,18 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up Qt
-      uses: jurplel/install-qt-action@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
       with:
-        version: '6.0.0'
-        modules: webengine
+        python-version: '3.11'
+
+    - name: Install aqtinstall
+      run: |
+        pip install aqtinstall==3.1.*
+
+    - name: Install Qt
+      run: |
+        python3 -m aqt install-qt linux desktop 6.2.4 --outputdir /home/runner/work/goldendict-ng/Qt --modules webengine
 
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y \
@@ -38,7 +45,8 @@ jobs:
         mkdir build_dir
         cmake -S . -B build_dir \
               --install-prefix=/usr/local/ \
-              -DCMAKE_BUILD_TYPE=Release
+              -DCMAKE_BUILD_TYPE=Release \
+              -DQt5_DIR=/home/runner/work/goldendict-ng/Qt/6.2.4/gcc_64/lib/cmake/Qt5
 
     - name: Build the project
       run: cmake --build build_dir --parallel 7
