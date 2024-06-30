@@ -3,10 +3,10 @@ name: Build and Package
 on:
   push:
     branches:
-      - main
+      - staged
   pull_request:
     branches:
-      - main
+      - staged
 
 jobs:
   build:
