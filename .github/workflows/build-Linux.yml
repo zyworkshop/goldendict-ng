@@ -16,17 +16,14 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-   
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y \
-        libavformat-dev libavutil-dev libbz2-dev libeb16-dev libhunspell-dev \
-        liblzma-dev liblzo2-dev libopencc-dev libvorbis-dev \ 
-        libx11-dev libxtst-dev libzim-dev libzstd-dev qt6-5compat-dev \
-        qt6-base-dev qt6-multimedia-dev qt6-speech-dev qt6-svg-dev \
-        qt6-tools-dev qt6-tools-dev-tools qt6-webchannel-dev \
-        qt6-webengine-dev x11proto-record-dev zlib1g-dev
-
-   
+        libavformat-dev libavutil-dev libbz2-dev liblzma-dev libx11-dev \
+        qt6-base-dev qt6-speech-dev qt6-svg-dev qt6-tools-dev qt6-webchannel-dev \
+        qt6-webengine-dev zlib1g-dev \
+        libhunspell-dev liblzo2-dev libopencc-dev libvorbis-dev libxtst-dev \
+        libzim-dev libzstd-dev x11proto-record-dev qt6-5compat-dev qt6-multimedia-dev \
+        qt6-tools-dev-tools
 
     - name: Configure the project
       run: |
@@ -54,7 +51,7 @@ jobs:
         echo "Section: base" >> build_dir/debian/DEBIAN/control
         echo "Priority: optional" >> build_dir/debian/DEBIAN/control
         echo "Architecture: amd64" >> build_dir/debian/DEBIAN/control
-        echo "Depends: libavformat-dev, libavutil-dev, libbz2-dev, libeb16-dev, libhunspell-dev, liblzma-dev, liblzo2-dev, libopencc-dev, libvorbis-dev, libx11-dev, libxtst-dev, libzim-dev, libzstd-dev, qt6-5compat-dev, qt6-base-dev, qt6-multimedia-dev, qt6-speech-dev, qt6-svg-dev, qt6-tools-dev, qt6-tools-dev-tools, qt6-webchannel-dev, qt6-webengine-dev, x11proto-record-dev, zlib1g-dev, ffmpeg, libzim, xapian, hunspell, opencc, libeb, libvorbis, x11, xz-utils, bzip2, lzo2, zlib1g, cmake" >> build_dir/debian/DEBIAN/control
+        echo "Depends: libavformat-dev, libavutil-dev, libbz2-dev, libhunspell-dev, liblzma-dev, liblzo2-dev, libopencc-dev, libvorbis-dev, libx11-dev, libxtst-dev, libzim-dev, libzstd-dev, qt6-5compat-dev, qt6-base-dev, qt6-multimedia-dev, qt6-speech-dev, qt6-svg-dev, qt6-tools-dev, qt6-tools-dev-tools, qt6-webchannel-dev, qt6-webengine-dev, x11proto-record-dev, zlib1g-dev, ffmpeg, libzim, xapian, hunspell, opencc, libeb, libvorbis, x11, xz-utils, bzip2, lzo2, zlib1g, cmake" >> build_dir/debian/DEBIAN/control
         echo "Maintainer: Your Name <you@example.com>" >> build_dir/debian/DEBIAN/control
         echo "Description: GoldenDict Next Generation" >> build_dir/debian/DEBIAN/control
 
