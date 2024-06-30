@@ -1,0 +1,75 @@
+name: Build and Package
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: '6.0.0'
+        modules: webengine
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y \
+        libavformat-dev libavutil-dev libbz2-dev libeb16-dev libhunspell-dev \
+        liblzma-dev liblzo2-dev libopencc-dev libvorbis-dev \
+        libx11-dev libxtst-dev libzim-dev libzstd-dev qt6-5compat-dev \
+        qt6-base-dev qt6-multimedia-dev qt6-speech-dev qt6-svg-dev \
+        qt6-tools-dev qt6-tools-dev-tools qt6-webchannel-dev \
+        qt6-webengine-dev x11proto-record-dev zlib1g-dev \
+        ffmpeg libzim xapian hunspell opencc libeb libvorbis x11 \
+        xz-utils bzip2 lzo2 zlib1g cmake dh-make fakeroot devscripts
+
+    - name: Configure the project
+      run: |
+        mkdir build_dir
+        cmake -S . -B build_dir \
+              --install-prefix=/usr/local/ \
+              -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build the project
+      run: cmake --build build_dir --parallel 7
+
+    - name: Install the project
+      run: sudo cmake --install build_dir
+
+    - name: Create DEBIAN directory and control file
+      run: |
+        mkdir -p build_dir/debian/DEBIAN
+        echo "Package: goldendict-ng" > build_dir/debian/DEBIAN/control
+        echo "Version: 1.0.0" >> build_dir/debian/DEBIAN/control
+        echo "Section: base" >> build_dir/debian/DEBIAN/control
+        echo "Priority: optional" >> build_dir/debian/DEBIAN/control
+        echo "Architecture: amd64" >> build_dir/debian/DEBIAN/control
+        echo "Depends: libavformat-dev, libavutil-dev, libbz2-dev, libeb16-dev, libhunspell-dev, liblzma-dev, liblzo2-dev, libopencc-dev, libvorbis-dev, libx11-dev, libxtst-dev, libzim-dev, libzstd-dev, qt6-5compat-dev, qt6-base-dev, qt6-multimedia-dev, qt6-speech-dev, qt6-svg-dev, qt6-tools-dev, qt6-tools-dev-tools, qt6-webchannel-dev, qt6-webengine-dev, x11proto-record-dev, zlib1g-dev, ffmpeg, libzim, xapian, hunspell, opencc, libeb, libvorbis, x11, xz-utils, bzip2, lzo2, zlib1g, cmake" >> build_dir/debian/DEBIAN/control
+        echo "Maintainer: Your Name <you@example.com>" >> build_dir/debian/DEBIAN/control
+        echo "Description: GoldenDict Next Generation" >> build_dir/debian/DEBIAN/control
+
+    - name: Copy build files to debian directory
+      run: |
+        mkdir -p build_dir/debian/usr/local
+        cp -r /usr/local/* build_dir/debian/usr/local
+
+    - name: Build DEB package
+      run: |
+        dpkg-deb --build build_dir/debian
+        mv build_dir/debian.deb goldendict-ng-1.0.0.deb
+
+    - name: Upload DEB package
+      uses: actions/upload-artifact@v2
+      with:
+        name: goldendict-ng-deb
+        path: goldendict-ng-1.0.0.deb
