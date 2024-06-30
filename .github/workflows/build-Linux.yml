@@ -16,25 +16,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-
-    - name: Install aqtinstall
-      run: |
-        pip install aqtinstall==3.1.*
-
-    - name: List available modules for Qt 6.2.4
-      run: |
-        python3 -m aqt list-qt linux desktop 6.2.4 --modules
-      continue-on-error: true
-
-    - name: Install Qt
-      run: |
-        python3 -m aqt install-qt linux desktop 6.2.4 --outputdir /home/runner/work/goldendict-ng/Qt --modules qtwebengine
-      continue-on-error: true
-
+   
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y \
         libavformat-dev libavutil-dev libbz2-dev libeb16-dev libhunspell-dev \
